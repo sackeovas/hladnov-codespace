@@ -29,25 +29,6 @@ function pridejZradloNaNahodnePole(velikost) {
   }
 }
 
-//SPECIÁLNÍ ŽRÁDLA
-function nesmrtelnost(velikost){
-  let a = Math.floor(Math.random() * (velikost) + 1);
-  let b = Math.floor(Math.random() * (velikost) + 1);
-  let nahodnePolee = document.getElementById(a + ":" + b);
-
-  if (nahodnePolee.classList.contains("had")) {
-    // Recursively call the function until an unoccupied pole is found
-    nesmrtelnost(velikost);} 
-  else if(nahodnePolee.classList.contains("zradlo")) {
-    nesmrtelnost(velikost);}
-  else {
-    nahodnePolee.classList.add("nesmrtelneZradlo");
-    console.log("Chci hodit nesmrtelné žrádlo na " + a + ":" + b);
-    zradlo = [nahodnePolee];
-  }
-  }
-  
-
 window.onload = function btnAppears() {
   let startButton = document.getElementById("startButton");
   startButton.style.display = "block";
@@ -88,7 +69,8 @@ function zmenaMrizky() {
   }
   pridejHadaNaNahodnePole(velikost)
   pridejZradloNaNahodnePole(velikost)
-  nesmrtelnost(velikost)
+  //nesmrtelnost(velikost)
+  zrychlení(velikost)
 }
  
 function pohniHadem(dolu, doprava) {
@@ -118,17 +100,8 @@ function pohniHadem(dolu, doprava) {
     const polickoKterePrestavaBytHadem = had.pop();
     polickoKterePrestavaBytHadem.classList.remove("had");
   }
-  
-  if (cilovePolicko.classList.contains("nesmrtelneZradlo")) {
-    console.log("Had bude nesmrtelný");
-    cilovePolicko.classList.remove("nesmrtelneZradlo");
-
-  } else {
-    const polickoKterePrestavaBytHadem = had.pop();
-    polickoKterePrestavaBytHadem.classList.remove("had");
-  }
 }
-
+ 
 let posledniKlavesa = 0;
 
 let rychlost;
@@ -144,9 +117,9 @@ function autopohyb(udalost) {
 
 function zrychlení(velikost) { //nefunguje :(((
   if (velikost > 12){
+    console.log("Zrychluji hada");
     clearInterval(rychlost);
     rychlost = setInterval(pohyb, 100);
-    console.log("Zrychluji hada");
   }
 }
 
@@ -182,11 +155,8 @@ function kontrolaProhry(cilovePolicko) {
     window.alert("Sebe sežrat nemůžeš")
     window.location.reload();
   }
-  if (cilovePolicko.classList.contains("nesmrtelneZradlo")){
-    setTimeout(kontrolaProhry(cilovePolicko),5000);
-    console.log ("Had je 5s nesmrtelný")
-  }
 }
+  
 
 document.addEventListener("keydown", autopohyb);
 
