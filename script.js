@@ -1,5 +1,6 @@
 // Konstanty
 const plocha = document.getElementById("plocha")
+const tlacitkoStart = document.getElementById("tlacitkoStart")
 const tlacitkoZmenVelikost = document.getElementById("tlacitkoZmenVelikost")
 
 // Globalní proměnné
@@ -9,16 +10,10 @@ let rychlost;
 let velikost;
 
 // Události
-window.onload = function btnAppears() {
-  let tlacitkoStart = document.getElementById("tlacitkoStart");
-  tlacitkoStart.style.display = "block";
-  plocha.style.display = "none";
-
-  tlacitkoStart.addEventListener('click', function () {
-    tlacitkoStart.style.display = "inline-block";
-    plocha.style.display = "inline-block"
-  });
-}
+tlacitkoStart.addEventListener('click', function () {
+  tlacitkoStart.remove()
+  plocha.style.display = ""
+});
 tlacitkoZmenVelikost.addEventListener("click", zmenaMrizky)
 document.addEventListener("keydown", autopohyb);
 
@@ -64,7 +59,7 @@ function zmenaMrizky() {
   const poleVelikost = document.getElementById("velikost");
   velikost = parseInt(poleVelikost.value);
   console.log("Měním mřížku na velikost " + velikost)
-  
+
   mrizka.style.setProperty('--velikost', velikost)
   for (let noveX = 1; noveX <= velikost; noveX++) {
     for (let noveY = 1; noveY <= velikost; noveY++) {
