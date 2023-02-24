@@ -1,6 +1,30 @@
-let had = [document.querySelector(".had")]
+// Konstanty
 const plocha = document.getElementById("plocha")
+const tlacitkoZmenVelikost = document.getElementById("tlacitkoZmenVelikost")
 const velikost = nactiVelikost();
+
+// Globalní proměnné
+let had = [document.querySelector(".had")]
+let posledniKlavesa = 0;
+let rychlost;
+
+// Události
+window.onload = function btnAppears() {
+  let tlacitkoStart = document.getElementById("tlacitkoStart");
+  tlacitkoStart.style.display = "block";
+  plocha.style.display = "none";
+
+  tlacitkoStart.addEventListener('click', function () {
+    tlacitkoStart.style.display = "inline-block";
+    plocha.style.display = "inline-block"
+  });
+}
+tlacitkoZmenVelikost.addEventListener("click", zmenaMrizky)
+document.addEventListener("keydown", autopohyb);
+
+// Počáteční nastavení
+zmenaMrizky()
+
 
 function pridejHadaNaNahodnePole(velikost) {
   let a = Math.floor(Math.random() * velikost + 1) ; //Math.floor zaokrouhlí na celé číslo dolů
@@ -27,20 +51,6 @@ function pridejZradloNaNahodnePole(velikost) {
     zradlo = [nahodnePolee];
   }
 }
-
-window.onload = function btnAppears() {
-  let startButton = document.getElementById("startButton");
-  startButton.style.display = "block";
-  plocha.style.display = "none";
-
-  startButton.addEventListener('click', function () {
-    startButton.style.display = "inline-block";
-    plocha.style.display = "inline-block"
-  });
-}
-
-const customGrid = document.getElementById("customGrid")
-customGrid.addEventListener("click", zmenaMrizky)
 
 function zmenaMrizky() {
   const mrizka = document.getElementById("plocha");
@@ -99,10 +109,6 @@ function pohniHadem(dolu, doprava) {
     polickoKterePrestavaBytHadem.classList.remove("had");
   }
 }
- 
-let posledniKlavesa = 0;
-
-let rychlost;
 
 function autopohyb(udalost) {
   const jeToPrvniKlavesa = (posledniKlavesa === 0);
@@ -159,8 +165,3 @@ function nactiVelikost() {
   
   return parseInt(poleVelikost.value);
 }
-  
-
-document.addEventListener("keydown", autopohyb);
-
-zmenaMrizky()
