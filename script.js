@@ -156,3 +156,17 @@ function kontrolaProhry(cilovePolicko) {
     window.location.reload();
   }
 }
+
+
+
+/*function objeveniPortalu(klavesaP) {
+  const jeToP = (klavesaPortal === 80);
+  klavesaPortal = klavesaP.which;
+  if (jeToP) {
+    portaly()
+  }
+}
+function portaly() {
+  console.log("Portály se spawnou");
+  if ()
+}*/
