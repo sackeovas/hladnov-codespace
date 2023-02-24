@@ -1,7 +1,6 @@
 let had = [document.querySelector(".had")]
-let plocha = document.getElementById("plocha")
-const poleVelikost = document.getElementById("velikost");
-const velikost = parseInt(poleVelikost.value);
+const plocha = document.getElementById("plocha")
+const velikost = nactiVelikost();
 
 function pridejHadaNaNahodnePole(velikost) {
   let a = Math.floor(Math.random() * velikost + 1) ; //Math.floor zaokrouhlí na celé číslo dolů
@@ -52,8 +51,7 @@ function zmenaMrizky() {
   const puvodniMezera = document.createElement("br");
   mrizka.append(puvodniMezera)
 
-  const poleVelikost = document.getElementById("velikost");
-  const velikost = parseInt(poleVelikost.value);
+  const velikost = nactiVelikost()
   console.log("Měním mřížku na velikost " + velikost)
   mrizka.style.setProperty('--velikost', velikost)
   for (let noveX = 1; noveX <= velikost; noveX++) {
@@ -142,7 +140,6 @@ function pohyb() {
   }
 }
 
-
 function kontrolaProhry(cilovePolicko) {
   if (cilovePolicko == null) {
     clearInterval() //had se zastaví
@@ -155,6 +152,12 @@ function kontrolaProhry(cilovePolicko) {
     window.alert("Sebe sežrat nemůžeš")
     window.location.reload();
   }
+}
+
+function nactiVelikost() {
+  const poleVelikost = document.getElementById("velikost");
+  
+  return parseInt(poleVelikost.value);
 }
   
 
