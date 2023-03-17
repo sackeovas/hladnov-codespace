@@ -4,10 +4,24 @@ const tlacitkoStart = document.getElementById("tlacitkoStart")
 const tlacitkoZmenVelikost = document.getElementById("tlacitkoZmenVelikost")
 
 // Globalní proměnné
-let had = [document.querySelector(".had")]
 let posledniKlavesa = 0;
 let rychlost;
-let velikost;
+
+let stavHry = {
+	sirka: 7,
+  vyska: 7,
+  zradlo: [
+  	{x: 1, y: 1},
+  	{x: 5, y: 5},
+  ],
+  hraci: [
+  	{
+    	connection: null,
+    	had: [{x: 3, y: 3}],
+      smer: {x:0, y:0}
+    },
+  ]
+}
 
 // Události
 tlacitkoStart.addEventListener('click', function () {
@@ -48,63 +62,47 @@ function pridejZradloNaNahodnePole() {
 }
 
 function zmenaMrizky() {
-  const mrizka = document.getElementById("plocha");
-
-  for (const element of mrizka.querySelectorAll("br, .pole")) {
-    element.remove()
-  }
-  const puvodniMezera = document.createElement("br");
-  mrizka.append(puvodniMezera)
-
   const poleVelikost = document.getElementById("velikost");
-  velikost = parseInt(poleVelikost.value);
+  const velikost = parseInt(poleVelikost.value);
   console.log("Měním mřížku na velikost " + velikost)
-
-  mrizka.style.setProperty('--velikost', velikost)
-  for (let noveX = 1; noveX <= velikost; noveX++) {
-    for (let noveY = 1; noveY <= velikost; noveY++) {
-      const novyDiv = document.createElement("div");
-      novyDiv.classList.add("pole");
-      novyDiv.id = noveX + ":" + noveY
-      mrizka.append(novyDiv);
-      console.log("Přidám div s id" + novyDiv.id);
-    }
-    const noveBr = document.createElement("br");
-    mrizka.append(noveBr);
-  }
+  
+  stavHry.sirka = velikost
+  stavHry.vyska = velikost
+  
   pridejHadaNaNahodnePole()
   pridejZradloNaNahodnePole()
   //nesmrtelnost()
   zrychlení()
+  
+  aktualizujStavHry()
 }
  
 function pohniHadem(dolu, doprava) {
-  const hadiHlava = had[0];
+  const hadiHlava = stavHry.hraci[0].had[0];
   
-  console.log("Had je na " + hadiHlava.id);
+  console.log("Had je na " + hadiHlava.x + ":" + hadiHlava.y);
 
-  let radek = parseInt(hadiHlava.id.split(":")[0]);
-  let sloupec = parseInt(hadiHlava.id.split(":")[1]);
-  const idCil = radek + dolu + ":" + (sloupec + doprava);
-  console.log("Had bude na " + idCil);
+  const cil = {x: hadiHlava.x + dolu, y: hadiHlava.y + doprava}
+  
+  console.log("Had bude na " + cil.x + ":" + cil.y);
 
-  const cilovePolicko = document.getElementById(idCil);
+  kontrolaProhry(cil)
 
-  kontrolaProhry(cilovePolicko)
-
-  had.unshift(cilovePolicko);
-
-  cilovePolicko.classList.add("had");
-
-  if (cilovePolicko.classList.contains("zradlo")) {
-    console.log("Had bude žrát");
-    cilovePolicko.classList.remove("zradlo");
-
-    pridejZradloNaNahodnePole()
-  } else {
-    const polickoKterePrestavaBytHadem = had.pop();
-    polickoKterePrestavaBytHadem.classList.remove("had");
+  stavHry.hraci[0].had.unshift(cil);
+  
+  for (let i = 0; i < stavHry.zradlo.length; i++) {
+    const zradlo = stavHry.zradlo[i]
+    if (zradlo.x === cil.x && zradlo.y === cil.y) {
+      console.log("Had bude žrát");
+      stavHry.zradlo.splice(i, 1)
+      pridejZradloNaNahodnePole()
+      return
+    }
   }
+  
+  stavHry.hraci[0].had.pop()
+  
+  aktualizujStavHry()
 }
 
 function autopohyb(udalost) {
@@ -143,17 +141,44 @@ function pohyb() {
   }
 }
 
-function kontrolaProhry(cilovePolicko) {
-  if (cilovePolicko == null) {
+function kontrolaProhry(cil) {
+  if (cil.x < 0 || cil.x >= stavHry.sirka || cil.y < 0 || cil.y >= stavHry.vyska) {
     clearInterval() //had se zastaví
     window.alert("Had narazil do zdi:(")
 
     window.location.reload(); //page reload   
   }
-  else if (cilovePolicko.classList.contains("had")) {
-    clearInterval() //had se zastaví
-    window.alert("Sebe sežrat nemůžeš")
-    window.location.reload();
+  // TODO pro Simonu z budoucnosti: Hadi do sebe nesmí narazit :)
+}
+
+function aktualizujStavHry() {
+  const mrizka = document.getElementById("plocha");
+
+  for (const element of mrizka.querySelectorAll("br, .pole")) {
+    element.remove()
+  }
+  const puvodniMezera = document.createElement("br");
+  mrizka.append(puvodniMezera)
+  
+  for (let noveX = 0; noveX < stavHry.sirka; noveX++) {
+    for (let noveY = 0; noveY < stavHry.vyska; noveY++) {
+      const novyDiv = document.createElement("div");
+      novyDiv.classList.add("pole");
+      novyDiv.id = noveX + ":" + noveY
+      
+      for (let i = 0; i < stavHry.zradlo.length; i++) {
+        const zradlo = stavHry.zradlo[i]
+        if (zradlo.x === noveX && zradlo.y === noveY) {
+          novyDiv.classList.add("zradlo")
+        }
+      }
+      // TODO pro Simonu z budoucnosti: Totéž pro hady :)
+      
+      mrizka.append(novyDiv);
+      console.log("Přidám div s id" + novyDiv.id);
+    }
+    const noveBr = document.createElement("br");
+    mrizka.append(noveBr);
   }
 }
 
